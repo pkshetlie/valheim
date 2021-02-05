@@ -1,6 +1,8 @@
 #!/bin/bash
 
+
 # update server's data
+echo "Update server"
 /steamcmd/steamcmd.sh +login anonymous +force_install_dir /home/steam/server_data +app_update 896660 +exit
 
 #Copy 64bit steamclient, since it keeps using 32bit
@@ -16,10 +18,13 @@ SERVER_PASSWORD=${SERVER_PASSWORD:-secret}
 trap "echo 1 > server_exit.drp;" SIGTERM
 
 #Launch server
+echo "demarrage server"
+
 export LD_LIBRARY_PATH=./linux64:$LD_LIBRARY_PATH
 export SteamAppId=892970
 
 /home/steam/server_data/valheim_server.x86_64 -name "$SERVER_NAME" -port $SERVER_PORT -world "$SERVER_WORLD" -password "$SERVER_PASSWORD" -public 1 & 
 
+echo "server started"
 #Wait for server to exit
 while wait $!; [ $? != 0 ]; do true; done
